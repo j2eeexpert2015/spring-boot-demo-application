@@ -1,24 +1,35 @@
 apiVersion: 1
 
 providers:
-  - name: 'Thread Performance Dashboards'
+  # Thread Performance Dashboard - Top Level
+  - name: 'Thread Performance Dashboard'
     orgId: 1
-    folder: 'Thread Performance'
-    folderUid: 'thread-performance'
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /var/lib/grafana/dashboards
+      path: /var/lib/grafana/dashboards/thread-performance-dashboard.json
+      foldersFromFilesStructure: false
 
-  - name: 'Default Dashboards'
+  # JVM Metrics Dashboard - Top Level  
+  - name: 'JVM Metrics Dashboard'
     orgId: 1
-    folder: ''
-    folderUid: ''
     type: file
     disableDeletion: false
-    updateIntervalSeconds: 30
+    updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /var/lib/grafana/dashboards
+      path: /var/lib/grafana/dashboards/jvm-metrics-dashboard.json
+      foldersFromFilesStructure: false
+
+  # Load Testing Dashboard - Top Level
+  - name: 'Load Testing Dashboard'
+    orgId: 1
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/load-test-dashboard.json
+      foldersFromFilesStructure: false
