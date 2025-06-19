@@ -1,0 +1,210 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "jvm-metrics-002",
+    "title": "☕ JVM Metrics Deep Dive",
+    "description": "Detailed JVM metrics for Platform vs Virtual Threads comparison",
+    "tags": ["jvm", "spring-boot", "threads", "performance", "java"],
+    "style": "dark",
+    "timezone": "browser",
+    "refresh": "10s",
+    "schemaVersion": 30,
+    "version": 1,
+    "time": {
+      "from": "now-30m",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "🧵 Thread Creation Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(jvm_threads_started_threads_total{job=~\"spring-boot.*\"}[1m])",
+            "legendFormat": "{{thread_type}} - Thread Creation Rate",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Threads Created/sec",
+            "show": true,
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "🔄 Thread Lifecycle",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_threads_peak_threads{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - Peak Threads",
+            "refId": "A"
+          },
+          {
+            "expr": "jvm_threads_daemon_threads{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - Daemon Threads",
+            "refId": "B"
+          },
+          {
+            "expr": "jvm_threads_live_threads{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - Live Threads",
+            "refId": "C"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Thread Count",
+            "show": true,
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "🧠 Memory Pool Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{job=~\"spring-boot.*\", id=~\".*Eden.*\"}",
+            "legendFormat": "{{thread_type}} - {{id}}",
+            "refId": "A"
+          },
+          {
+            "expr": "jvm_memory_used_bytes{job=~\"spring-boot.*\", id=~\".*Survivor.*\"}",
+            "legendFormat": "{{thread_type}} - {{id}}",
+            "refId": "B"
+          },
+          {
+            "expr": "jvm_memory_used_bytes{job=~\"spring-boot.*\", id=~\".*Old.*\"}",
+            "legendFormat": "{{thread_type}} - {{id}}",
+            "refId": "C"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory (bytes)",
+            "show": true,
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "🗑️ Garbage Collection Details",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_gc_pause_seconds_sum{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - {{gc}} {{action}} (Total Time)",
+            "refId": "A"
+          },
+          {
+            "expr": "jvm_gc_pause_seconds_count{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - {{gc}} {{action}} (Count)",
+            "refId": "B"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "GC Time (seconds)",
+            "show": true,
+            "min": 0
+          },
+          {
+            "label": "GC Count",
+            "show": true,
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 5,
+        "title": "📊 Buffer Pool Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_buffer_count_buffers{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - {{id}} Buffer Count",
+            "refId": "A"
+          },
+          {
+            "expr": "jvm_buffer_memory_used_bytes{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - {{id}} Memory Used",
+            "refId": "B"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Count / Bytes",
+            "show": true,
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        }
+      },
+      {
+        "id": 6,
+        "title": "🏭 Class Loading Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_classes_loaded_classes{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - Classes Loaded",
+            "refId": "A"
+          },
+          {
+            "expr": "jvm_classes_unloaded_classes_total{job=~\"spring-boot.*\"}",
+            "legendFormat": "{{thread_type}} - Classes Unloaded (Total)",
+            "refId": "B"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Class Count",
+            "show": true,
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 24
+        }
+      }
+    ]
+  }
+}

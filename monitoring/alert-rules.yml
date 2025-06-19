@@ -1,0 +1,100 @@
+groups:
+  - name: thread_performance_alerts
+    rules:
+      # Thread Pool Exhaustion Alert
+      - alert: ThreadPoolExhaustion
+        expr: (tomcat_threads_busy_threads / tomcat_threads_config_max_threads) * 100 > 90
+        for: 30s
+        labels:
+          severity: warning
+          service: thread-demo
+        annotations:
+          summary: "Thread pool exhaustion detected for {{ $labels.thread_type }}"
+          description: "Thread pool utilization is {{ $value }}% for {{ $labels.thread_type }} threads"
+
+      # High Response Time Alert  
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, thread_type)) > 5
+        for: 1m
+        labels:
+          severity: warning
+          service: thread-demo
+        annotations:
+          summary: "High response time detected for {{ $labels.thread_type }}"
+          description: "95th percentile response time is {{ $value }}s for {{ $labels.thread_type }} threads"
+
+      # Memory Usage Alert
+      - alert: HighMemoryUsage
+        expr: (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+          service: thread-demo
+        annotations:
+          summary: "High memory usage detected for {{ $labels.thread_type }}"
+          description: "Heap memory usage is {{ $value }}% for {{ $labels.thread_type }} threads"
+
+      # High Error Rate Alert
+      - alert: HighErrorRate
+        expr: (sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) by (thread_type) / sum(rate(http_server_requests_seconds_count[5m])) by (thread_type)) * 100 > 5
+        for: 1m
+        labels:
+          severity: critical
+          service: thread-demo
+        annotations:
+          summary: "High error rate detected for {{ $labels.thread_type }}"
+          description: "Error rate is {{ $value }}% for {{ $labels.thread_type }} threads"
+
+      # Application Down Alert
+      - alert: ApplicationDown
+        expr: up{job=~"spring-boot.*"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: thread-demo
+        annotations:
+          summary: "Application is down"
+          description: "{{ $labels.job }} application is not responding"
+
+      # GC Pressure Alert
+      - alert: HighGCPressure
+        expr: rate(jvm_gc_pause_seconds_count[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+          service: thread-demo
+        annotations:
+          summary: "High GC pressure detected for {{ $labels.thread_type }}"
+          description: "GC events rate is {{ $value }}/sec for {{ $labels.thread_type }} threads"
+
+  - name: performance_comparison_alerts
+    rules:
+      # Performance Degradation Alert
+      - alert: PerformanceDegradation
+        expr: |
+          (
+            histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{thread_type="virtual"}[5m])) by (le)) /
+            histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{thread_type="platform"}[5m])) by (le))
+          ) > 1.5
+        for: 2m
+        labels:
+          severity: warning
+          service: thread-demo
+        annotations:
+          summary: "Virtual threads performing worse than platform threads"
+          description: "Virtual threads are {{ $value }}x slower than platform threads in 95th percentile response time"
+
+      # Throughput Comparison Alert
+      - alert: LowThroughputComparison
+        expr: |
+          (
+            sum(rate(http_server_requests_seconds_count{thread_type="virtual"}[5m])) /
+            sum(rate(http_server_requests_seconds_count{thread_type="platform"}[5m]))
+          ) < 0.8
+        for: 2m
+        labels:
+          severity: info
+          service: thread-demo
+        annotations:
+          summary: "Virtual threads throughput is lower than platform threads"
+          description: "Virtual threads throughput is {{ $value }}x of platform threads throughput"
