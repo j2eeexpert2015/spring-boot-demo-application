@@ -34,42 +34,6 @@ services:
     depends_on:
       - prometheus
 
-  # Application container for platform threads
-  app-platform:
-    build: .
-    container_name: thread-demo-platform
-    ports:
-      - "8080:8080"
-    environment:
-      - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=platform
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
-      - MANAGEMENT_ENDPOINT_METRICS_ENABLED=true
-      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
-    networks:
-      - monitoring
-    profiles:
-      - platform
-
-  # Application container for virtual threads  
-  app-virtual:
-    build: .
-    container_name: thread-demo-virtual
-    ports:
-      - "8081:8080"
-    environment:
-      - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=virtual
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
-      - MANAGEMENT_ENDPOINT_METRICS_ENABLED=true
-      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
-    networks:
-      - monitoring
-    profiles:
-      - virtual
-
 volumes:
   prometheus_data:
   grafana_data:
