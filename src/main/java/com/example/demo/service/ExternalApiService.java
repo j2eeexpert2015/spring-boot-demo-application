@@ -3,9 +3,7 @@ package com.example.demo.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -17,13 +15,9 @@ public class ExternalApiService {
     private long externalApiDelay;
 
     private final RestTemplate restTemplate;
-    private final WebClient webClient;
 
     public ExternalApiService() {
         this.restTemplate = new RestTemplate();
-        this.webClient = WebClient.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024))
-                .build();
     }
 
     /**
@@ -53,13 +47,11 @@ public class ExternalApiService {
      */
     public Map<String, Object> callMultipleExternalApis(String requestId, int count) {
         Map<String, Object> responses = new HashMap<>();
-
         for (int i = 1; i <= count; i++) {
             String apiRequestId = requestId + "_api_" + i;
             Map<String, Object> response = callSlowExternalApi(apiRequestId);
             responses.put("api_" + i, response);
         }
-
         return responses;
     }
 

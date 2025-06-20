@@ -1,14 +1,14 @@
 {
   "id": null,
-  "uid": "thread-performance-enhanced",
-  "title": "🧵 Enhanced Thread Performance Comparison Dashboard",
-  "description": "Comprehensive comparison showing real differences between Platform and Virtual Threads",
-  "tags": ["spring-boot", "threads", "performance", "java", "virtual-threads", "concurrency"],
+  "uid": "thread-performance-clean",
+  "title": "🧵 Thread Performance Demo Dashboard",
+  "description": "Clean, focused dashboard for demonstrating Platform vs Virtual Threads performance",
+  "tags": ["demo", "threads", "performance", "comparison"],
   "style": "dark",
   "timezone": "browser",
   "refresh": "5s",
   "schemaVersion": 30,
-  "version": 2,
+  "version": 1,
   "time": {
     "from": "now-15m",
     "to": "now"
@@ -16,7 +16,7 @@
   "panels": [
     {
       "id": 1,
-      "title": "🏃‍♂️ Thread Count Comparison (Live)",
+      "title": "🧵 Thread Count",
       "type": "stat",
       "targets": [
         {
@@ -32,9 +32,7 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
           "custom": {
             "displayMode": "basic",
             "orientation": "horizontal"
@@ -43,24 +41,27 @@
           "min": 0,
           "thresholds": {
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 50},
-              {"color": "orange", "value": 150},
-              {"color": "red", "value": 200}
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "orange", "value": 180 },
+              { "color": "red", "value": 200 }
             ]
-          }
+          },
+          "fontSize": "150%"
         },
         "overrides": [
           {
-            "matcher": {"id": "byName", "options": "Platform Threads"},
+            "matcher": { "id": "byName", "options": "Platform Threads" },
             "properties": [
-              {"id": "color", "value": {"mode": "fixed", "fixedColor": "green"}}
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } },
+              { "id": "max", "value": 250 }
             ]
           },
           {
-            "matcher": {"id": "byName", "options": "Virtual Threads"},
+            "matcher": { "id": "byName", "options": "Virtual Threads" },
             "properties": [
-              {"id": "color", "value": {"mode": "fixed", "fixedColor": "blue"}}
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } },
+              { "id": "max", "value": 2000 }
             ]
           }
         ]
@@ -73,64 +74,12 @@
         "textMode": "value_and_name",
         "colorMode": "background"
       },
-      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 0}
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
     },
     {
       "id": 2,
-      "title": "📈 Thread Growth Over Time",
-      "type": "graph",
-      "targets": [
-        {
-          "expr": "jvm_threads_live_threads{job=\"spring-boot-platform\"}",
-          "legendFormat": "Platform Threads",
-          "refId": "A"
-        },
-        {
-          "expr": "jvm_threads_live_threads{job=\"spring-boot-virtual\"}",
-          "legendFormat": "Virtual Threads",
-          "refId": "B"
-        }
-      ],
-      "yAxes": [
-        {"label": "Thread Count", "min": 0}
-      ],
-      "gridPos": {"h": 8, "w": 16, "x": 8, "y": 0}
-    },
-    {
-      "id": 3,
-      "title": "💥 Tomcat Thread Pool Utilization",
-      "type": "graph",
-      "targets": [
-        {
-          "expr": "tomcat_threads_busy_threads{job=\"spring-boot-platform\"}",
-          "legendFormat": "Platform - Busy Threads",
-          "refId": "A"
-        },
-        {
-          "expr": "tomcat_threads_config_max_threads{job=\"spring-boot-platform\"}",
-          "legendFormat": "Platform - Max Threads (Limit)",
-          "refId": "B"
-        },
-        {
-          "expr": "tomcat_threads_busy_threads{job=\"spring-boot-virtual\"}",
-          "legendFormat": "Virtual - Busy Threads",
-          "refId": "C"
-        },
-        {
-          "expr": "tomcat_threads_config_max_threads{job=\"spring-boot-virtual\"}",
-          "legendFormat": "Virtual - Max Threads",
-          "refId": "D"
-        }
-      ],
-      "yAxes": [
-        {"label": "Threads", "min": 0}
-      ],
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
-    },
-    {
-      "id": 4,
-      "title": "🚀 Requests Per Second (Throughput)",
-      "type": "graph",
+      "title": "🚀 Requests Per Second",
+      "type": "stat",
       "targets": [
         {
           "expr": "sum(rate(http_server_requests_seconds_count{job=\"spring-boot-platform\"}[1m]))",
@@ -143,161 +92,92 @@
           "refId": "B"
         }
       ],
-      "yAxes": [
-        {"label": "Requests/sec", "min": 0}
-      ],
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4}
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "none",
+          "decimals": 0,
+          "min": 0,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "orange", "value": 30 },
+              { "color": "red", "value": 50 }
+            ]
+          },
+          "fontSize": "150%"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Platform RPS" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Virtual RPS" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "background"
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
     },
     {
-      "id": 5,
-      "title": "⏱️ Response Time Comparison (P50, P95, P99)",
+      "id": 3,
+      "title": "📈 Thread Growth Over Time",
       "type": "graph",
+      "lines": true,
+      "lineWidth": 2,
+      "points": false,
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job=\"spring-boot-platform\"}[5m])) by (le))",
-          "legendFormat": "Platform P50",
-          "refId": "A"
+          "expr": "jvm_threads_live_threads{job=\"spring-boot-platform\"}",
+          "legendFormat": "Platform Threads",
+          "refId": "A",
+          "interval": "5s"
         },
         {
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"spring-boot-platform\"}[5m])) by (le))",
-          "legendFormat": "Platform P95",
-          "refId": "B"
-        },
-        {
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=\"spring-boot-platform\"}[5m])) by (le))",
-          "legendFormat": "Platform P99",
-          "refId": "C"
-        },
-        {
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job=\"spring-boot-virtual\"}[5m])) by (le))",
-          "legendFormat": "Virtual P50",
-          "refId": "D"
-        },
-        {
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"spring-boot-virtual\"}[5m])) by (le))",
-          "legendFormat": "Virtual P95",
-          "refId": "E"
-        },
-        {
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=\"spring-boot-virtual\"}[5m])) by (le))",
-          "legendFormat": "Virtual P99",
-          "refId": "F"
+          "expr": "jvm_threads_live_threads{job=\"spring-boot-virtual\"}",
+          "legendFormat": "Virtual Threads",
+          "refId": "B",
+          "interval": "5s"
         }
       ],
       "yAxes": [
-        {"label": "Response Time (seconds)", "min": 0}
-      ],
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 12}
-    },
-    {
-      "id": 6,
-      "title": "💾 Memory Usage Per Thread Efficiency",
-      "type": "graph",
-      "targets": [
         {
-          "expr": "jvm_memory_used_bytes{job=\"spring-boot-platform\", area=\"heap\"} / jvm_threads_live_threads{job=\"spring-boot-platform\"}",
-          "legendFormat": "Platform - Memory per Thread",
-          "refId": "A"
+          "label": "Thread Count",
+          "format": "short",
+          "min": 0,
+          "max": 500,
+          "decimals": 0,
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "seriesOverrides": [
+        {
+          "alias": "Platform Threads",
+          "color": "#F2495C",
+          "lineWidth": 2
         },
         {
-          "expr": "jvm_memory_used_bytes{job=\"spring-boot-virtual\", area=\"heap\"} / jvm_threads_live_threads{job=\"spring-boot-virtual\"}",
-          "legendFormat": "Virtual - Memory per Thread",
-          "refId": "B"
+          "alias": "Virtual Threads",
+          "color": "#73BF69",
+          "lineWidth": 2
         }
       ],
-      "yAxes": [
-        {"label": "Bytes per Thread", "min": 0}
-      ],
-      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 20}
-    },
-    {
-      "id": 7,
-      "title": "⚠️ HTTP Error Rate",
-      "type": "graph",
-      "targets": [
-        {
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"spring-boot-platform\", status=~\"4..|5..\"}[1m])) / sum(rate(http_server_requests_seconds_count{job=\"spring-boot-platform\"}[1m])) * 100",
-          "legendFormat": "Platform Error %",
-          "refId": "A"
-        },
-        {
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"spring-boot-virtual\", status=~\"4..|5..\"}[1m])) / sum(rate(http_server_requests_seconds_count{job=\"spring-boot-virtual\"}[1m])) * 100",
-          "legendFormat": "Virtual Error %",
-          "refId": "B"
-        }
-      ],
-      "yAxes": [
-        {"label": "Error Rate (%)", "min": 0, "max": 100}
-      ],
-      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 20}
-    },
-    {
-      "id": 8,
-      "title": "🔥 JVM Garbage Collection Impact",
-      "type": "graph",
-      "targets": [
-        {
-          "expr": "rate(jvm_gc_collection_seconds_sum{job=\"spring-boot-platform\"}[1m])",
-          "legendFormat": "Platform GC Time/sec",
-          "refId": "A"
-        },
-        {
-          "expr": "rate(jvm_gc_collection_seconds_sum{job=\"spring-boot-virtual\"}[1m])",
-          "legendFormat": "Virtual GC Time/sec",
-          "refId": "B"
-        }
-      ],
-      "yAxes": [
-        {"label": "GC Time (seconds/sec)", "min": 0}
-      ],
-      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 26}
-    },
-    {
-      "id": 9,
-      "title": "🎯 Concurrent Connections",
-      "type": "graph", 
-      "targets": [
-        {
-          "expr": "tomcat_connections_current_connections{job=\"spring-boot-platform\"}",
-          "legendFormat": "Platform Connections",
-          "refId": "A"
-        },
-        {
-          "expr": "tomcat_connections_current_connections{job=\"spring-boot-virtual\"}",
-          "legendFormat": "Virtual Connections",
-          "refId": "B"
-        }
-      ],
-      "yAxes": [
-        {"label": "Active Connections", "min": 0}
-      ],
-      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 26}
-    },
-    {
-      "id": 10,
-      "title": "📊 Thread Pool Exhaustion Alert",
-      "type": "singlestat",
-      "targets": [
-        {
-          "expr": "(tomcat_threads_busy_threads{job=\"spring-boot-platform\"} / tomcat_threads_config_max_threads{job=\"spring-boot-platform\"}) * 100",
-          "legendFormat": "Platform Pool Utilization %",
-          "refId": "A"
-        }
-      ],
-      "valueName": "current",
-      "format": "percent",
-      "thresholds": "70,90",
-      "colors": ["green", "yellow", "red"],
-      "colorBackground": true,
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 32}
-    },
-    {
-      "id": 11,
-      "title": "🎮 Load Test Status",
-      "type": "text",
-      "mode": "markdown",
-      "content": "## 🧪 Load Testing Commands\n\n**Generate Load:**\n```bash\n# Light Load (20 requests)\nfor i in {1..20}; do\n  curl \"http://localhost:8080/api/blocking-io/external-api/load-$i\" &\n  curl \"http://localhost:8081/api/blocking-io/external-api/load-$i\" &\ndone\n\n# Heavy Load (100 requests) - Watch Platform threads hit limit!\nfor i in {1..100}; do\n  curl \"http://localhost:8080/api/nested/basic/stress-$i\" &\n  curl \"http://localhost:8081/api/nested/basic/stress-$i\" &\ndone\n```\n\n**Expected Results:**\n- 🟢 **Platform**: Thread count plateaus at ~200\n- 🔵 **Virtual**: Thread count scales to 1000+\n- ⚠️ **Platform**: Response times degrade under load\n- ✅ **Virtual**: Consistent response times",
-      "gridPos": {"h": 8, "w": 18, "x": 6, "y": 32}
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 }
     }
   ]
 }
