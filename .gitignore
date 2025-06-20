@@ -7,3 +7,6 @@
 /target
 mvnw
 mvnw.cmd
+/load-tests/results
+load-tests/jmeter.log
+load-tests/dual-concurrency-results.jtl
